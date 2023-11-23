@@ -1,0 +1,21 @@
+Serach in BST
+TreeNode* searchBST(TreeNode* root, int val) {
+        if(root->val == val) return root;
+        
+        if(val < root->val and root->left) return  searchBST(root->left,val);
+        if(val > root->val and root->right) return  searchBST(root->right,val);
+        
+        return NULL;
+    }
+___________________________________________________________________________________________________________________
+Check a B-Tree is BST       O1 space
+
+bool check(TreeNode* root , int l , int r){
+        if(!root) return true;
+        return ((root->val >= l and root->val <= r) and check(root->left , l , root->val-1) and
+               check(root->right , root->val+1 , r));
+    }
+    bool isValidBST(TreeNode* root) {
+        return check(root,INT_MIN,INT_MAX);   
+    }
+___________________________________________________________________________________________________________________

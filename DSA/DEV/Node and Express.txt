@@ -1,0 +1,96 @@
+Semantic Versioning Sysytem
+e.g.  "mongoose":"^4.13.6" // Caret(^)Major.Minor.Patch
+Pathch=Bug Fixes 
+Minor=Adding feature without breaking the existing api
+Major=Adding feature with breaking the existing api
+Caret(^)= Let NPM know that we are interested in any version of mongoose
+		 as long as major version is 4.e..g. 4.x.
+Tilde(~)=Let NPM know that we are interested in any version of mongoose
+		 as long as major version is 4 and minor version is 13. eg 4.13.x
+
+
+use of express.js =  It is built over http module and make routing easier.
+const express = require('express');//this statement return a function
+const app = express(); //this app return an object 
+app has various methods like get, post, delete to handle api calls
+like app.get('/' , (req,res)=>{
+					//callback block});
+
+REST = REpresentational State Transfer i.e. transfer of state of data from what it
+		has been sent from server i.e. json/xml to what in what state it is converted at client
+		side i.e natiive/html etc.
+API = Application Programing Inetrface is way of interaction of two app over internet
+	or different pages to the databse. Its is done via an api call with enpoints and query params
+	it can also be a sub domain like api.something.com/endpoint
+
+we use RESTful API to perform CRUD operations.
+
+Environment Variables are the variable inside the app whose value will come fom 
+outside the app. e.g. PORT is an environment variable whosw value will be
+decided at time of deployment. Method of accessing environment variable
+process.env.ENV_VAR
+
+sample route : localhost:3000/api/id/name?sortBy=name
+
+Route Parameter (/api /id)= in get method we pass them as app.get('/:id/:name',());
+	they are used to provide necessary data to user.
+	they can be accessed like (req.params.id/.name)
+
+Query Parameter(?sortBy=name)=they are used to provide additional info to user.
+	they can be accessed like (req.query.id/.name)
+
+Handling Post request and validating them using Joi
+npm i joi 
+
+
+Middleware = It is a function that takes the request object and either return 
+	a response to the client or transfer the request to another middleware.
+e.g of middleware express.json() or the route() method.
+midlleware are used as app.use(middleware) and are called in sequence
+Custom middleware function e.g app.use ( (req,res,next)=> //do something
+												next();//calling next middleware in sequence});
+          or const log = //middleware function
+	and app.use(log) // not log();	
+
+Built in middlewares = express.json() , express.urlencoded({extended : true}) //it is use to concatenate key ,
+	 			express.static('public') / use to serve all the static content in the public folder e.g localhost:3000/text.txt which is in public folder
+
+Few third party midlleware are called varies with the middlewares.
+
+--------------------------------------Asynchronous Javascript----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+How asynchronous javascript work
+e.g.  const val = fun(1);
+	function fun(n){
+	setTimeOut(()=>{ return n; },2000); }
+	console.log(val);
+Expected output 1    Actual Output undefined
+reason : setTimeOut function is async, when fun is called it will return a value instantly but the return value is not available until 2 seconds.
+		so it will return undefined. this is how async works in JS.
+
+Three ways to deal with ASYNC code
+ Callback,  Promises and Async/Await
+
+CALLBACK VS MULTI-Threading
+For programs that spend a lot of time waiting on i/o, asynchronous callbacks solve the same problem threads solves, but differently. It's one thread, but things happen "out of order," so to speak.
+In a threaded program, the current thread "blocks" when doing an i/o task (such as reading from a file or the network), but other threads continue to run. So it runs from top to bottom, but it may take a while to complete.
+In node.js, typically when you do an i/o task, you start the process, but provide it a callback that runs when the task is complete (or has some data to give you). Your function continues to run to the bottom, even though the thing it started won't complete until later.
+
+
+Call Back
+ getUser(1, (user) => { console.log('User',user); });
+function getUser(id, callback) {
+	setTimeout(() => { 
+callback({id:id , User: 'Aman'});
+},2000);  
+ }
+
+>>>>>>>>>>>>>> How to format a date in JS
+Promises
+
+
+  
+
+
+
+
+

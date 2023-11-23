@@ -1,0 +1,112 @@
+//KMP Algorithm
+
+#include <bits/stdc++.h>
+using namespace std;
+
+std::vector<int>ans;
+
+/*Longest Proper prefix which matches a suffix  eg in ABA  proper prefix are A, AB and suffix are ABA, BA, A. Hence 'A' is the longest proper prefix which matches a suffix.
+when we find a match, next we will check for next element of prefix to the next element of suffix. If it matches we will increase the length by 1 and then check onwards
+When we find a mismatch, we  will check the curr element with lps[lenght-1] until 0, Reason being lets say current length is 3 and curr char does not matches, then maybe prefix character at
+length - 1 i.e 2 may match so we will check for lps[length-1] */
+
+void computeLPS(string pattern , int lps[] , int m){
+    lps[0] = 0;
+    int i = 1 , len = 0;
+    
+    while(i<m){
+        if(pattern[i] == pattern[len]){
+            lps[i] = ++len;
+            i++;
+        }
+        else{
+            if(len == 0) {  lps[i] = 0;   i++;  }
+            else len = lps[len-1];
+        }
+    }
+}
+
+//KMP block.  we will use the lps array to tackle a mismatch condition like we did in compute lps function.
+
+void KMP(string text, int n, string pattern, int m, int lps[]){
+    int i = 0 , j = 0;
+    while(i<n){
+        if(text[i] == pattern[j]){ i++;  j++;}
+        
+        if(j==m){ 
+            ans.push_back(i-j); 
+            j = lps[j-1];
+            
+        }
+        
+        else if(i<n and text[i] != pattern[j]){
+            if(j==0) i++;
+            else j = lps[j-1];
+        }
+    }
+}
+int main() {
+    string text = "ABABDABACDABABCABAB";
+	int n = text.size();
+	string pattern = "ABA";
+	int m = pattern.size();
+	int lps[m] = {0};
+	computeLPS(pattern,lps,m);
+	KMP(text,n,pattern,m,lps);
+	for(int i = 0 ;i < ans.size() ; i++) cout<<ans[i]<<"   ";
+	return 0;
+}
+__________________________________________________________________________________________________________________________________________________________________________________________________________________
+Longest Palindromic Substring
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int n = s.length();
+        int maxl=1,st=0;
+        int l=0,r=0;
+// BLOCK TO CALCULATE STRING IF IT IS OF ODD LENGTH
+            for(int i=0;i<n;i++){
+                l=i;  r=i;
+                while(l>=0&&r<n&&s[l]==s[r]){ l--;  r++;}
+                int curr= r-l-1;
+                if(curr>maxl){
+                    maxl=curr;
+                    st=l+1;
+                }
+            }
+// BLOCK TO CALCULATE STRING IF IT IS OF EVEN LENGTH
+             for(int i=0;i<n-1;i++){
+                l=i;  r=i+1;
+                while(l>=0&&r<n&&s[l]==s[r]) {  l--; r++;  }
+                int curr= r-l-1;
+                if(curr>maxl){
+                    maxl=curr;
+                    st=l+1;
+            }
+        }
+        return s.substr(st,maxl);
+    }
+};
+_______________________________________________________________________________________________________________________________________________________________________________________________________
+LCS
+
+#include <bits/stdc++.h>
+using namespace std;
+int dp[100][100] = {0};
+int lcs(string s1 , int n , string s2 , int m){
+    if(n<0 or m<0) return 0;
+    
+    if(s1[n] == s2[m]) return dp[n][m] = 1+lcs(s1,n-1,s2,m-1);
+    else return dp[n][m] = max(lcs(s1,n,s2,m-1),lcs(s1,n-1,s2,m));
+}
+
+int main() {
+    string text = "abcdefg";
+	int n = text.size();
+	string pattern = "anbjuelpfg";
+	int m = pattern.size();
+	
+	cout<<lcs(text,n-1,pattern,m-1);
+	
+	return 0;
+}

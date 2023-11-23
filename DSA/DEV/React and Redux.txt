@@ -1,0 +1,4 @@
+Redux 
+why do we need redux - To avoid the problem of prop drilling.
+
+Redux solves this problem by managing application's state with a single global object called Store.

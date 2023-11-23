@@ -1,0 +1,5 @@
+Always use strict mode
+// Function expression
+const calAge  = function(year) {
+				return 2022 - year;
+				}

@@ -1,0 +1,71 @@
+Trie is well  suited for implementing dictionaries
+Efficient  for following operations on a word in a dictionaries 
+search       insert      delete      prefix search        lexographic ordering of  words
+
+Trie representation
+
+struct TrieNode {
+	TrieNode *child[256];// To handle all 256 characters
+	bool isEnd;
+	TrieNode(){
+		isEnd = false;
+		for(int i=0;i<256;i++) child[i] = NULL;
+   }
+};
+
+unlike empty tree where root is null and no memory is allocated, empty trie is a trie node with all 256 chars pointing to NULL hence 
+space is required.
+
+Search in trie
+bool search(TrieNode* root , string word){
+	for(int i=0;i<word.size();i++){
+		int index = (int)word[i];
+		if(root->child[index] == NULL) return false;
+		root = root->child[index];
+	}
+	return root->isEnd;
+}
+_________________________________________________________________________________________________________________________
+Insert in trie
+
+void insert(TrieNode* root , string word){
+	for(int i=0 ; i<word.size() ; i++){
+		int index = (int)word[i];
+		if(root->child[index] == NULL) 
+			root->child[index] = new TrieNode();
+		root = root->child[index];
+	}
+	root->isEnd = true;
+}
+___________________________________________________________________________________________________________
+Delete in  Trie
+
+bool isEmpty(TrieNode* root) { 
+    for (int i = 0; i < 256; i++) 
+        if (root->child[i]) 
+            return false; 
+    return true;    
+} 
+
+TrieNode* remove(TrieNode* root, string key, int i) 
+{  
+    if (!root)   return NULL; 
+
+    if (i == key.size()) { 
+            root->isEnd = false; 
+        if (isEmpty(root)) { 
+            delete (root); 
+            root = NULL; 
+        } 
+        return root;
+    }   
+    int index = key[i]; 
+    root->children[index] =  remove(root->children[index], key, i + 1); 
+    if (isEmpty(root) && root->isEnd == false) { 
+        delete (root); 
+        root = NULL; 
+    }
+    return root; 
+} 
+
+__________________________________________________________________________________________________________________________

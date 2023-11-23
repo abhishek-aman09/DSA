@@ -1,0 +1,72 @@
+A disjoint-set data structure is a data structure that keeps track of a set of elements partitioned into a number of disjoint (non-overlapping) subsets.
+For Example:
+Consider that there are 5 students in a classroom namely, A, B, C, D, and E.
+They will be denoted as 5 different subsets: {A}, {B}, {C}, {D}, {E}.
+After some point of time, A became friends with B, and C became friend with D. So, A and B will now belong to a same set and C and D will now belong to another same set.
+The disjoint data structure will now be: {A, B}, {C, D}, {E}.
+
+Disjoint set have only two function
+merge(a,b) => make both under same set
+find(a) => return parent of a.
+
+union set works on principle of parent. Initially parent[i] = i;
+in merge we do   parent[b] = a;
+_____________________________________________________________________________________________________________________________________________
+Kosaraju algo
+sort adjacency list on basis of weight
+for each u & v , check if par[u] != par[v] i.e they are not connected
+merge(u,v) and add their weight to ans;
+
+#include <bits/stdc++.h>
+using namespace std;
+static int parent[10001]; // taken parent globally for access in whole file
+struct edges{
+	int u;
+	int v;
+	int w;
+}; // structure to contain u v and their weight
+int find(int a){
+	return parent[a] == a ? a : find(parent[a]);
+}
+void merge(int a , int b){
+	parent[b] = a;
+}
+static bool myComp(edges a , edges b){
+	return a.w < b.w;
+}
+int main() {
+	int V,E;
+	cin>>V>>E;
+
+	for(int i=1;i<=V;i++) parent[i] = i; // initially every vertx is parent of itself
+	edges graph[E];
+	for(int i = 0 ; i<E ; i++) cin>>graph[i].u>>graph[i].v>>graph[i].w;
+	sort(graph , graph+E , myComp);
+	int ans = 0;
+	for(int i = 0 ; i<E ; i++){
+		int a = find(graph[i].u);
+		int b = find(graph[i].v);
+		if(a!=b){
+			merge(a,b);
+			ans+=graph[i].w;
+		}
+	}
+	cout<<ans<<"\n";
+}
+____________________________________________________________________________________________
+ Union by rank
+We make optimisation in merge function. We use a rank array initially 0 and set parent accordingly
+
+void merge(int a, int b){
+	if(find(a) == find(b)) return;
+	if(rank[a]>rank[b]){	 parent[b] = a; rank[a]++;	}
+	else     {    parent[a] = b; rank[b]++;    }   
+}
+___________________________________________________________________________________________________________
+Path Compression
+We make optimisation in find function. We set the parent of current element dtraight to parent of whole tree
+
+int find(int a){
+	if( parent[a] == a ) return a;
+	return parent[a] = find(parent[a]);
+}

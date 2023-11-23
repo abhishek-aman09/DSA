@@ -1,0 +1,29 @@
+Given an array A[] of N positive integers. The task is to find the maximum of j - i subjected to the constraint of A[i] < A[j] and i < j.
+ N = 9
+A[] = {34, 8, 10, 3, 2, 80, 30, 33, 1}
+Output:
+6
+In the given array A[1] < A[7] satisfying the required condition(A[i] < A[j]) thus giving the maximum difference of j - i which is 6(7-1).
+
+int maxIndexDiff(int arr[], int N) 
+    { 
+        if(N == 1 ) return -1;
+        if(arr[N-1] > arr[0]) return N-1;
+        
+        stack<int>stk;
+        stk.push(0);
+        for(int i = 1; i < N-1 ; i++)    if(arr[i] < arr[stk.top()])    stk.push(i); //create a stack of decreasing elements
+        
+        int ans = 0;
+        int i = N-1;
+ 
+        while(i){
+            while(!stk.empty() and arr[i] >= arr[stk.top()] and i >= stk.top()){
+                ans = max(ans , i-stk.top());
+                stk.pop();
+            }
+            i--;
+        }
+        return ans;
+    }
+_____________________________________________________________________________________________________________________

@@ -1,0 +1,295 @@
+1 Reverse Linked List ITERATIVE
+ListNode* reverseList(ListNode* head) {
+        ListNode* curr=head,*prev=NULL;
+        while(curr){
+            ListNode* next = curr->next;
+            curr->next=prev;
+            prev=curr;
+            curr=next;
+        }
+        
+        return prev;
+    }
+-----------------------------------------------------------------------------
+2 Reverse Linked List RECURSIVE
+ListNode* rev(ListNode* curr, ListNode* prev){
+        if(curr==NULL)
+            return prev;
+        
+        ListNode* next = curr->next;
+        curr->next=prev;
+        return rev(next,curr);
+    }
+//Caller Function
+    ListNode* reverseList(ListNode* head) {
+        ListNode* curr=head,*prev=NULL;
+        return rev(curr,prev);
+    }
+-----------------------------------------------------------------------------------------------
+3 Find middle of linked list (slow,fast)
+ ListNode* middleNode(ListNode* head) {
+        ListNode* slow=head,*fast=head; 
+        if(head==NULL||head->next==NULL)
+            return head;      
+        slow=slow->next;
+        fast=fast->next->next;       
+        while(fast and fast->next)
+        {
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+        return slow;   
+    }
+-----------------------------------------------------------------------------------------------------
+4 Merge 2 sored List (merge sort method)
+
+ ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        if(!list1)
+            return list2;
+        if(!list2)
+            return list1;
+        
+        
+        ListNode* head=NULL;
+        ListNode* curr=head;
+        
+        while(list1 and list2)    {
+					//conditional case for head
+          					  if(head==NULL){
+              					  if(list1->val<=list2->val)
+           						     {
+         						         head=list1;
+               					         list1=list1->next;
+        					                } 
+              					  else
+         					               {
+      						            head=list2;
+       						             list2=list2->next;
+                					  } 
+               					 curr=head;
+                					continue;
+            				   }
+            if(list1->val<=list2->val)
+                {
+                  curr->next=list1;
+                    list1=list1->next;
+                } 
+            else
+                {
+                  curr->next=list2;
+                    list2=list2->next;
+                } 
+                curr=curr->next;
+
+        }
+        //Check remain of list1
+        if(list1){
+            curr->next=list1;
+        }
+        //Check remain of list2
+        if(list2){
+            curr->next=list2;
+        }
+        
+        curr->next=NULL;
+        return head;
+    }
+------------------------------------------------------------------------------------------------------------------------------------------------
+5 Remove nth node from end
+
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+        
+        ListNode* fast=head,*slow=head;
+        
+        
+        while(fast and n--)
+            fast=fast->next;
+        if(fast==NULL)
+            return head->next;
+
+        ListNode* temp=NULL;
+        while(fast){
+            fast=fast->next;
+            temp=slow;
+            slow=slow->next;
+        }
+        temp->next=slow->next;
+        return head;
+        
+    }
+---------------------------------------------------------------------------------------------------------------------------------------
+6 Add two No given by linked list in rev order
+
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        
+        
+        ListNode* ansHead= new ListNode((l1->val+l2->val)%10);
+        ListNode* curr=ansHead;
+        int bal = (l1->val+l2->val)/10;
+        l1=l1->next;    l2=l2->next;
+        while(l1 and l2){
+            ListNode* temp= new ListNode((l1->val+l2->val+bal)%10);
+            bal=(l1->val+l2->val+bal)/10;
+            l1=l1->next;    l2=l2->next;   
+            curr->next=temp;
+            curr=curr->next;
+        }
+        
+        while(l1){
+            ListNode* temp= new ListNode((l1->val+bal)%10);
+            bal=(l1->val+bal)/10;
+            l1=l1->next;   
+            curr->next=temp;
+            curr=curr->next;
+        }
+        while(l2){
+            ListNode* temp= new ListNode((l2->val+bal)%10);
+            bal=(l2->val+bal)/10;
+            l2=l2->next;   
+            curr->next=temp;
+            curr=curr->next;
+        }
+        if(bal!=0){
+            ListNode* temp = new ListNode(bal);
+            curr->next=temp;
+        }   
+        return ansHead;
+    }
+---------------------------------------------------------------------------------------------------------------------------------------------------
+7 Delete non-tail node with only pointer to node is given
+
+ void deleteNode(ListNode* node) {
+        node->val=node->next->val;
+        node->next = node->next->next;
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+8 Find Intersection of two linked list 
+	( with known lengths)
+
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *h1=headA,*h2=headB;
+        int l1=0,l2=0;
+        while(headA){headA=headA->next; l1++;}
+        while(headB){headB=headB->next; l2++;}
+        
+        headA=h1; headB=h2;
+        
+        if(l1>=l2){
+            int t=l1-l2;
+            while(t--) h1=h1->next;
+        }
+        else{
+            int t=l2-l1;
+            while(t--) h2=h2->next;
+        }
+        while(h1!=h2 and h1 and h2){h1=h1->next; h2=h2->next;}
+        return h1;
+    }
+	
+	(Without computing Length)
+// Both list will travel same length as lenA+skipB = lenB+skipA
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        ListNode *h1=headA,*h2=headB;
+        
+        while(h1 and h2 and h1!=h2){
+            h1=h1->next; h2=h2->next;
+            // Comparison should be done after increament to compare both null values
+            if(h1==h2) return h1;
+            if(!h1) h1=headB;
+            if(!h2) h2=headA;   
+        }   
+        return h1;
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------
+9 Find cycle in a list (Floyd Algo)
+
+bool hasCycle(ListNode *head) {
+        if(!head or !head->next)
+            return false;
+        
+        ListNode *slow=head->next, *fast = head->next->next;
+        while(fast and fast->next and slow!=fast)
+        {slow=slow->next; fast=fast->next->next;}
+        
+        if(!fast or!fast->next)
+            return false;
+        return true;
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+10 Check List is Palindrome (O n time and O1 space) links are destroyed.
+
+bool isPalindrome(ListNode* head) {
+        if(!head or !head->next)
+            return true;
+        
+        ListNode *slow=head->next,*fast=head->next->next,*tail=head;
+//Find middle of list
+        while(fast and fast->next){
+            tail=slow;
+            slow=slow->next;
+            fast=fast->next->next;
+        }
+// make tail of first half to null
+        tail->next=NULL;
+        
+        ListNode *prev=NULL , *curr=NULL;
+        if(fast)
+            curr=slow->next; // if odd number of nodes are present
+        else
+            curr = slow; // if even number of nodes are present
+  // Reversing the second half of the list      
+        while(curr){
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev=curr;
+            curr=next;
+        }
+   // checking each val of first half with corresponding value of second half
+        while(prev and head){
+            if(head->val!=prev->val)
+                return false;
+            head=head->next;
+            prev=prev->next;
+        }
+        
+        return true;
+        
+    }
+______________________________________________________________________________________________________________
+Find starting point of loop
+
+ListNode *detectCycle(ListNode *head) {
+        if(!head or !head->next)
+            return NULL;
+        // Sprecial case for only two elements and second is connected to first;
+        if(head->next->next == head) return head;
+        
+       ListNode *slow = head->next, *fast = head->next->next; 
+        while(fast and fast->next){
+            if(slow == fast)
+                break;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        if(slow != fast)
+            return NULL;
+        slow = head;
+        while(slow->next != fast->next){
+            slow = slow->next;
+            fast = fast->next;
+        }
+        return fast->next;
+    }
+__________________________________________________________________________________________________
+Merge sort for linked list
+// middle function is slow and fast pointer approach , merge function is merge two sorted list function
+Node* mergeSort(Node* head) {
+        // your code here
+        if(head->next == NULL) return head;
+        Node* mid = middle(head);
+        Node* head2 = mid->next;
+        mid->next = NULL;
+        Node* newHead = merge(mergeSort(head) , mergeSort(head2));
+        return newHead;
+    }

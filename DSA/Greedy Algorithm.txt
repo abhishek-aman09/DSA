@@ -1,0 +1,72 @@
+Activity Selection Problem (DO NOT GET CONFUSED WITH MERGE OVERLAPPING SUBINTERVALS PROBLEM)
+In MOSP , condition is to check if curr_end > next_start and then merge them.   sort acc to start time
+In ASP , condition is to check if curr_end < next_start and then we can do both the activities other wise not.   Sort acc to finish time
+
+static bool myComp(pair<int,int>a , pair<int,int> b ){
+        return a.second < b.second; 
+    }
+    int activitySelection(vector<int> start, vector<int> end, int n)
+    {
+        vector<pair<int,int>>time;
+        for(int i=0;i<n;i++) time.push_back({start[i] , end[i]});
+        sort(time.begin() , time.end() , myComp);
+        int ans = 1;
+        int e = time[0].second;  
+        for(int i=1;i<n;i++){
+            if(e < time[i].first){
+                ans++;
+                e = time[i].second;
+            }
+        }        
+        return ans;
+    }
+___________________________________________________________________________________________________________________________
+Fractional Knapsack (Sorting is done on basis of maximum value per unit weight (value/weight))
+
+static bool myComp(Item a, Item b){
+        return ((double)a.value/(double)a.weight) > ((double)b.value/(double)b.weight); 
+    }
+    double fractionalKnapsack(int W, Item arr[], int n)
+    {
+        sort(arr,arr+n,myComp);
+        double ans = 0;
+        
+        for(int i = 0 ; i<n ;i++){
+            if(arr[i].weight <= W){
+                W -= arr[i].weight;
+                ans += arr[i].value;
+            }
+            else{
+                ans += (arr[i].value/(double)arr[i].weight)*(double)W;
+                break;
+            }
+        }  
+        return ans;
+    }
+_______________________________________________________________________________________________________________________
+Given a set of N jobs where each job has a deadline and profit associated with it.
+Each job takes 1 unit of time
+Input:   N = 4     Jobs = {(1,4,20),(2,1,10),(3,1,40),(4,1,30)}    Output:  2 60
+find the maximum profit and the number of jobs done.
+
+ static bool myComp(Job a, Job b){
+        return (a.profit > b.profit);
+        
+    }
+    vector<int> JobScheduling(Job arr[], int n) 
+    { 
+        bool isDone[101] = {false};
+        sort(arr,arr+n,myComp);
+        vector<int>ans(2,0);
+        
+        for(int i = 0; i<n;i++){
+            int j = arr[i].dead;
+            while(j>0 and isDone[j]) j--;
+            if(j<=0) continue;
+            isDone[j] = true;
+            ans[0]++;
+            ans[1]+=arr[i].profit;   
+        }
+        return ans;
+    } 
+__________________________________________________________________________________________________________________________

@@ -1,0 +1,104 @@
+Quick sort using Lomuto partitioning
+
+#include <bits/stdc++.h>
+using namespace std;
+//  Lomuto Partitioning Block. Returns position of pivot.
+int lomutoPart(int *arr , int l , int r){
+    int pivot = arr[r],i;
+    int j = l-1;
+    
+    for(i=l ; i<r ; i++){
+        if(arr[i] > pivot) continue;                         To sort the array in Descending order change if(arr[i] < pivot) continue;
+        j++;
+        swap(arr[i] , arr[j]);
+    }
+    swap(arr[j+1] , arr[r]);
+    return j+1;
+}
+
+void qSort(int *arr , int l , int r){
+    if(l>=r) return;
+    int pivot = lomutoPart(arr,l,r);
+    qSort(arr,l,pivot-1);
+    qSort(arr,pivot+1,r);
+}
+
+int main() {
+	int n = 10;
+	int arr[n] = {2,6,7,5,9,4,10,1,8,3};
+	qSort(arr,0,n-1);
+	for(int i = 0 ;i < n ; i++) cout<<arr[i]<<"   ";
+	return 0;
+}
+__________________________________________________________________________________________________________________________________________________________________________________________________________
+Quick sort using Hoare partitioning
+
+#include <bits/stdc++.h>
+using namespace std;
+//  Hoare Partitioning Block. Returns position of partition(included).
+int hoarePart(int *arr , int l , int r){
+    int i = l , j = r , pivot = arr[l];
+    while(i<j){
+        while(arr[i] < pivot) i++;                            To sort the array in Descending order change  while(arr[i] > pivot) i++; 
+        while(arr[j] > pivot) j--; 				And					    while(arr[j] < pivot) j--;
+        if(i>=j) return j;
+        swap(arr[i] , arr[j]);
+    }
+    
+    return j;
+}
+
+void qSort(int *arr , int l , int r){
+    if(l>=r) return;
+    int pivot = hoarePart(arr,l,r);
+    qSort(arr,l,pivot);
+    qSort(arr,pivot+1,r);
+}
+
+int main() {
+	int n = 10;
+	int arr[n] = {2,6,7,5,9,4,10,1,8,3};
+	qSort(arr,0,n-1);
+	for(int i = 0 ;i < n ; i++) cout<<arr[i]<<"   ";
+	return 0;
+}
+__________________________________________________________________________________________________________________________________________________________________________________________________________
+Merge Sort
+
+#include <bits/stdc++.h>
+using namespace std;
+// merging two array using two temporary array
+void merge(int *arr , int l , int mid , int r){
+    int lim_left = mid-l+1; int lim_right = r-mid; //defining size of left and right temporary array
+    int left[lim_left] , right[lim_right];
+    for(int i=0 ; i< lim_left ; i++) left[i] = arr[l+i];
+    for(int i=0 ; i<lim_right ; i++) right[i] = arr[mid+i+1];
+    
+    int i=0,j=0,n=l;
+    
+    while(i<lim_left and j<lim_right){
+        if(left[i] < right[j])  arr[n++] = left[i++];
+        else  arr[n++] = right[j++];
+    }
+    while(i<lim_left )  arr[n++] = left[i++];
+    while(j<lim_right)  arr[n++] = right[j++];
+}
+
+void mergeSort(int *arr, int l ,int r){
+    if(l>=r) return;
+    int mid = l + (r-l)/2;
+    mergeSort(arr,l,mid);
+    mergeSort(arr,mid+1,r);
+    merge(arr,l,mid,r);
+}
+
+
+int main() {
+	int n = 10;
+	int arr[n] = {2,6,7,5,9,4,10,1,8,3};
+	mergeSort(arr,0,n-1);
+	for(int i = 0 ;i < n ; i++) cout<<arr[i]<<"   ";
+	return 0;
+}
+_______________________________________________________________________________________________________________________________________________________________________________________________________________
+

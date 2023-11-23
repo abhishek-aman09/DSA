@@ -1,0 +1,364 @@
+1 detect cycle in directed graph using BFS (Kahn's algo)
+
+ bool isCyclic(int V, vector<int> adj[]) {
+        // code here
+        bool vis[V];
+        memset(vis,false,sizeof vis);
+        
+        vector<int> indegree(V,0);
+        
+        for(int i=0;i<V;i++){
+            for(int child : adj[i])
+            indegree[child]++;
+        }
+        int cnt=0;
+        
+        for(int i=0;i<V;i++){
+            if(vis[i])
+            continue;
+            queue<int>q;
+            if(indegree[i]==0)
+            q.push(i);
+            while(!q.empty()){
+                cnt++;
+                int curr = q.front();
+                q.pop();
+                vis[curr]=true;
+                for(int child : adj[curr]){
+                    indegree[child]--;
+                    if(!vis[child] and indegree[child]==0)
+                    q.push(child);
+                }
+            }
+        }
+        return cnt!=V;
+    }
+-------------------------------------------------------------------------------------------------------------------------
+2 Detect cycle in directed graph DFS (active stack metod)
+
+ bool dfs(vector<int>adj[],bool *vis,vector<int>&active,int i){
+        vis[i]=true;
+        active[i]=1;
+        
+        for(int child : adj[i]){
+            if(!vis[child]){
+                if(dfs(adj,vis,active,child))
+                return true;
+            }
+            
+            else if(vis[child] and active[child]==1)
+            return true;
+        }
+        active[i]=0;
+        return false;
+    }
+    bool isCyclic(int V, vector<int> adj[]) {
+        // code here
+        bool vis[V];
+        vector<int> active(V,0);
+        memset(vis,false,sizeof vis);
+        
+        for(int i=0;i<V;i++){
+            
+            if(!vis[i]){
+                if(dfs(adj,vis,active,i))
+                return true;
+            }
+        }
+        return false;
+    }
+
+    -------------------------------------------------------------------------------------------------------------------------
+
+3 cycle in undi graph DFS
+bool dfs(vector<int> adj[],bool *vis,int i,int parent){
+        vis[i] = true;
+        for(int child : adj[i]){
+            if(!vis[child] and !dfs(adj,vis,child,i))
+            continue;
+            else if(vis[child] and child != parent)
+            return true;
+        }
+        return false;
+    }
+    bool isCycle(int V, vector<int> adj[]) {
+        // Code here
+    bool vis[V];
+    memset(vis,false,sizeof vis);
+    for(int i=0;i<V;i++){
+        if(!vis[i] and dfs(adj,vis,i,-1))
+        return true;
+       }
+    
+    return false;
+    }
+-------------------------------------------------------------------------------------------------------------------------------------------
+3 cycle in undi graph BFS
+
+bool isCycle(int V, vector<int> adj[]) {
+        // Code here
+        bool vis[V];
+        memset(vis,false,sizeof vis);
+        queue<pair<int,int>>q;
+        for(int i=0;i<V;i++){
+            if(vis[i])
+            continue;
+        q.push({i,-1});
+        
+        
+        while(!q.empty()){
+            pair<int,int> curr = q.front();
+            q.pop();
+            vis[curr.first] = true;
+            
+            for(int child : adj[curr.first]){
+                if(!vis[child] )
+                q.push({child,curr.first});
+                else if(vis[child] and curr.second != child)
+                return true;
+            }
+            }
+        }
+        
+        return false;
+    }
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+4 Topological sort DFS
+
+vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    // code here
+	    
+	    vector<int>indegree(V,0);
+
+	    for(int i=0;i<V;i++){
+	        for(int child : adj[i])
+	        indegree[child]++;
+	    }
+	    
+	    vector<bool>vis(V,false);
+	    vector<int>ans;
+	    
+	    for(int i=0;i<V;i++){
+	        if(vis[i])
+	        continue;
+	        queue<int>q;
+	        if(indegree[i]==0)
+	        q.push(i);
+	        
+	        while(!q.empty()){
+	            int curr=q.front();
+	            q.pop();
+	            vis[curr]=true;
+	            ans.push_back(curr);
+	            for(int child : adj[curr]){
+	                indegree[child]--;
+	                if(!vis[child] and indegree[child]==0)
+	                q.push(child);
+	            }   
+	        }    
+	    }
+	     return ans;
+	}
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5 Topological sort DFS
+
+void dfs(vector<int>adj[],vector<bool>&vis, vector<int>&ans,vector<int>&indegree,int i){
+	    vis[i]=true;
+	    ans.push_back(i);
+	    
+	    for(int child : adj[i]){
+	        indegree[child]--;
+	        if(indegree[child]==0 and !vis[child])
+	        dfs(adj,vis,ans,indegree,child);
+	    }
+	}
+	
+	
+	vector<int> topoSort(int V, vector<int> adj[]) 
+	{
+	    // code here
+	    
+	    vector<int>indegree(V,0);
+	    for(int i=0;i<V;i++){
+	        for(int child : adj[i])
+	        indegree[child]++;
+	    }
+	    
+	    vector<bool>vis(V,false);
+	    vector<int>ans;
+	    
+	    for(int i=0;i<V;i++){
+	        if(!vis[i] and indegree[i]==0)
+	        dfs(adj,vis,ans,indegree,i);
+	    }
+	     return ans;
+	}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+6 No. of connected comps GRID
+
+bool isSafe(int i, int j,int n,int m,vector<vector<int>>&vis,vector<vector<char>>&grid){
+        if(i<0||i>=n||j<0||j>=m)
+            return false;
+        if(vis[i][j]==1||grid[i][j]=='0')
+            return false;
+        
+        return true;
+    }
+    
+  void dfs(vector<vector<char>>&grid,vector<vector<int>>&vis,int i, int j,int n,int m){
+        
+        vis[i][j]=1;
+        
+        int dx[]={-1,0,1,0};
+        int dy[]={0,-1,0,1};
+        
+        for(int k=0;k<4;k++)
+            if(isSafe(i+dx[k],j+dy[k],n,m,vis,grid))
+                dfs(grid,vis,i+dx[k],j+dy[k],n,m);
+        
+        
+    }
+     
+    int solve(vector<vector<char>>& grid,int n, int m){
+        
+       vector<vector<int>>vis(n,vector<int>(m,0));
+        int ans=0;
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(vis[i][j]==0&&grid[i][j]=='1'){
+                    ans++;
+                    dfs(grid,vis,i,j,n,m);
+                }
+            }
+        }
+        return ans;
+    }
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+7 Bipertite graph (break in 2 sets using color system) DFS
+
+ bool dfs(vector<vector<int>>& graph,vector<bool>&vis,vector<int>&color,int i, int col){
+        vis[i]=true;
+        color[i]=col;
+        
+        for(int child : graph[i]){
+            if(!vis[child]){
+                if(!dfs(graph,vis,color,child,col*-1))
+                    return false;
+            }
+            else if(vis[child] and color[child] == color[i])
+                return false;
+        }
+        
+        return true;
+    } 
+    bool isBipartite(vector<vector<int>>& graph) {
+        
+        int n=graph.size();
+        vector<bool> vis(n,false);
+        vector<int>col(n,0);
+        
+        for(int i=0;i<n;i++){
+            if(!vis[i])
+              if(!dfs(graph,vis,col,i,1))
+                  return false;
+        }
+        
+        return true;
+        
+    }
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+8 Bipertite graph (break in 2 sets using color system) BFS
+
+bool isBipartite(vector<vector<int>>& graph) {
+        
+        int n=graph.size();
+        vector<bool> vis(n,false);
+        vector<int>col(n,0);
+        
+        for(int i=0;i<n;i++){
+            if(vis[i])
+              continue;
+            int color=1;
+            queue<int>q;
+            q.push(i);
+            col[i]=color;
+            while(!q.empty()){
+                int curr = q.front();
+                q.pop();
+                vis[curr]=true;
+                
+                for(int child : graph[curr]){
+                    if(!vis[child]){
+                        q.push(child);
+                        col[child] = col[curr]*-1;
+                    }
+                    else if(vis[child] and col[child] == col[curr])
+                        return false;
+                    
+                }
+            }
+        }
+        
+        return true;
+        
+    }
+------------------------------------------------------------------------------------------------------------------
+9 Kosaraju Algo  for no. of strongly connected comp in DG using a transpose graph and max out time method
+
+// To store the nodes in decreasing order of out time.
+void dfsList(vector<int> adj[], vector<bool>&vis,stack<int>&stk,int i){
+	    vis[i]=true;
+	    
+	    for(int child : adj[i])
+	    if(!vis[child])
+	    dfsList(adj,vis,stk,child);
+	    
+	    stk.push(i);
+	}
+	void dfs(vector<int> adj[], vector<bool>&vis,int i){
+	    vis[i]=true;
+	    
+	    for(int child : adj[i])
+	    if(!vis[child])
+	    dfs(adj,vis,child);
+	    
+	}
+	//Function to find number of strongly connected components in the graph.
+    int kosaraju(int V, vector<int> adj[])
+    {
+        
+        vector<bool>vis(V,false);
+        stack<int>stk;
+        for(int i=0;i<V;i++){
+            if(!vis[i])
+            dfsList(adj,vis,stk,i);
+        }
+        //Transpose Graph
+        vector<int>trans[V];
+        
+        for(int i=0;i<V;i++){
+            for(int child : adj[i]){
+                trans[child].push_back(i);
+            }
+        }
+        
+        fill(vis.begin(),vis.end(),false);
+        int ans=0;
+        while(!stk.empty()){
+            
+            int i=stk.top();
+            stk.pop();
+            if(!vis[i]){
+                ans++;
+                dfs(trans,vis,i);
+            }
+        }
+        
+        return ans;
+    }
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
